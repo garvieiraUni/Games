@@ -52,11 +52,9 @@ class padle:
             return False
         if coord[0] > self.pl[1] or coord[0] < self.pl[0]:
             if self.player == 1:
-                print("2")
                 return False
         if coord[0] < self.pl[0] or coord[0] > self.pl[1]:
             if self.player == 2:
-                print(f"NÃO Batendo: {coord}, linha: {self.pl[0]}")
                 return False
         return True
     
