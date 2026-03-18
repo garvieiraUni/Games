@@ -41,7 +41,7 @@ while running:
                     running = False
             elif event.key == pygame.K_RETURN:
                 if instructions:
-                    game_start(screen)
+                    game_start(screen, 5)
                     instructions = False
                 else:
                     instructions = True

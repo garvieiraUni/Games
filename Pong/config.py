@@ -1,5 +1,5 @@
 import pygame
-from random import randint
+from random import randint, choice
 
 # infos da tela
 pygame.init()
@@ -13,6 +13,7 @@ cl = largura/100 #Idem Largura
 
 #Fontes
 font_main = pygame.font.SysFont("impact", 200)
+font_placar = pygame.font.SysFont("Impact", 80)
 main_options = pygame.font.SysFont("consolas", 50)
 main_options_exit = pygame.font.SysFont("consolas", 35)
 instructions_players = pygame.font.SysFont("roboto", 140)
@@ -33,8 +34,8 @@ class padle:
         if player == 1:
             self.pl = (cl*5, cl*7) #posicionamento largura - p1
         else:
-            self.pl = (cl*94, cl*96) #posicionamento largura - p2
-        self.largura = round(self.pl[1] - self.pl[0])
+            self.pl = (cl*91, cl*93) #posicionamento largura - p2
+        self.largura = self.pl[1] - self.pl[0]
 
     def move_up(self): #mover padle pra cima
         if self.pa0 > 0:
@@ -48,16 +49,14 @@ class padle:
 
     def vef_hitbox(self, coord=(int,int)):
         if coord[1] > self.paf or coord[1] < self.pa0:
-            #print(f'Bola : {coord}')
-            #print(f'{self.pa0}--{self.paf}')
             return False
-        if coord[0] > round(self.pl[1]):
+        if coord[0] > self.pl[1] or coord[0] < self.pl[0]:
             if self.player == 1:
                 print("2")
                 return False
-        if coord[0] < round(self.pl[0]):
+        if coord[0] < self.pl[0] or coord[0] > self.pl[1]:
             if self.player == 2:
-                print("3")
+                print(f"NÃO Batendo: {coord}, linha: {self.pl[0]}")
                 return False
         return True
     
@@ -82,9 +81,10 @@ class ball:
         self.diry = vely*(ca)
 
     def atualizamov(self):
+        self.dirx = self.velx*(cl/5)        #dir movimento
+        self.diry = self.vely*(ca/2)
         self.px += self.dirx
         self.py += self.diry
-        self.raio = self.raio
         self.pnor = (self.px, self.py - self.raio) #coordenadas de colisão
         self.psul = (self.px, self.py + self.raio)
         self.poeste = (self.px - self.raio, self.py)
@@ -95,17 +95,14 @@ class ball:
         self.psude = (self.px + self.raio, self.py + self.raio)
         self.esquerda = [self.poeste, self.psudo, self.pnoro, self.psul, self.pnor]
         self.direita = [self.pleste, self.psude, self.pnord, self.psul, self.pnor]
-        self.dirx = self.velx*(cl/5)        #dir movimento
-        self.diry = self.vely*(ca/2)
     
-    def batida(self, player = int, x=False, borda=int):
+    def batida(self, player = int, x=False, randy = True):
         if x:
-            if player == 1: self.velx = randint(5,7)
+            if player == 1: self.velx = randint(5, 7)
             else: self.velx = randint(-7, -5)
-            
-        if borda == 0: self.vely = 1 
-        elif borda == 1: self.vely = -1
-        else: self.vely = randint(-1,1) 
+
+        if randy: self.vely = choice([-1,1,-1,1,-1,0,1,-1,1,-1,1])
+        else: self.vely *= -1 
             
 class player:
     def __init__(self):
